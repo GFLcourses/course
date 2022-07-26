@@ -1,4 +1,4 @@
-package com.example.gfl_patterns;
+package com.example.gfl_patterns.dto_task;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
@@ -7,7 +7,6 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 public class MainBootApplication {
 
     public static void main(String[] args) {
-        SpringApplication.run(com.example.gfl_patterns.MainBootApplication.class, args);
+        SpringApplication.run(MainBootApplication.class, args);
     }
-
 }
