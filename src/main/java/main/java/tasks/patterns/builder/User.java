@@ -1,4 +1,4 @@
-package main.java.tasks.builder;
+package main.java.tasks.patterns.builder;
 
 import lombok.Getter;
 
