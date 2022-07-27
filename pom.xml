@@ -1,0 +1,26 @@
+<project>
+
+    <modelVersion>4.0.0</modelVersion>
+    <groupId>com</groupId>
+    <artifactId>my-programm</artifactId>
+    <version>1.0</version>
+
+    <properties>
+        <javaVersion>17</javaVersion>
+        <maven.compiler.target>${javaVersion}</maven.compiler.target>
+        <maven.compiler.source>${javaVersion}</maven.compiler.source>
+        <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
+    </properties>
+
+    <dependencies>
+        <dependency>
+            <groupId>org.projectlombok</groupId>
+            <artifactId>lombok</artifactId>
+            <version>1.18.24</version>
+            <scope>provided</scope>
+        </dependency>
+    </dependencies>
+
+
+</project>
