@@ -11,6 +11,11 @@ public class FacadeImpl implements Facade {
     private final List<SingletonService> singletonServices = new ArrayList<>();
 
 
+    public List<SingletonService> getSingletonServices() {
+        return singletonServices;
+    }
+
+
     public void addSingleton(SingletonService singletonService) {
         singletonServices.add(singletonService);
     }
