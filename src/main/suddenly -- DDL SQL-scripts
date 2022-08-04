@@ -1,0 +1,43 @@
+CREATE DATABASE gfl_tasks;
+
+--// for DTO-task
+CREATE SCHEMA dto_task;
+
+CREATE TABLE users
+(
+    id       BIGSERIAL PRIMARY KEY,
+    username VARCHAR(255) NOT NULL UNIQUE,
+    password VARCHAR(255) NOT NULL UNIQUE,
+    balance NUMERIC(19, 2) NOT NULL
+);
+
+--// for facade-task
+CREATE SCHEMA facade_task;
+
+CREATE TABLE store (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL UNIQUE,
+    capacity INTEGER
+);
+
+CREATE TABLE product (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL UNIQUE,
+    store_id BIGINT REFERENCES store(id) ON DELETE CASCADE
+);
+
+--// for factory-task
+CREATE SCHEMA factory_task;
+
+CREATE TABLE company (
+    id BIGSERIAL PRIMARY KEY,
+    title VARCHAR(255) NOT NULL UNIQUE
+);
+
+CREATE TABLE employee (
+    id BIGSERIAL PRIMARY KEY,
+    first_name VARCHAR(255) NOT NULL,
+    last_name VARCHAR(255) NOT NULL ,
+    company_id BIGINT REFERENCES company(id) ON DELETE CASCADE,
+    UNIQUE (first_name, last_name)
+);
