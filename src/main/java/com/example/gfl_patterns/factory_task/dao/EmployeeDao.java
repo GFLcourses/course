@@ -1,7 +1,6 @@
 package com.example.gfl_patterns.factory_task.dao;
 
 import com.example.gfl_patterns.factory_task.dto.EmployeeFilterDto;
-import com.example.gfl_patterns.factory_task.entity.Company;
 import com.example.gfl_patterns.factory_task.entity.Employee;
 import com.example.gfl_patterns.factory_task.exception.DaoException;
 import com.example.gfl_patterns.factory_task.factory.Factory;
@@ -16,7 +15,7 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
-public class EmployeeDao implements BaseDao<Employee, Long> {
+public class EmployeeDao extends BaseDao<Employee, Long, EmployeeFilterDto> {
 
     private static final String SAVE_SQL = """
             INSERT INTO factory_task.employee(first_name, last_name, company_id)
@@ -53,6 +52,7 @@ public class EmployeeDao implements BaseDao<Employee, Long> {
         this.companyDao = factory.createBean(CompanyDao.class);
     }
 
+    @Override
     Employee buildEntity(ResultSet resultSet) throws SQLException {
         return new Employee(
                 resultSet.getLong("id"),
@@ -60,6 +60,53 @@ public class EmployeeDao implements BaseDao<Employee, Long> {
                 resultSet.getString("last_name"),
                 this.companyDao.buildEntity(resultSet)
         );
+    }
+
+    @Override
+    public List<Employee> findAllByFilter(EmployeeFilterDto filter) {
+        List<Object> parameters = new ArrayList<>();
+        List<String> whereSQL = new ArrayList<>();
+
+        if (filter.getFirstName() != null) {
+            parameters.add("%" + filter.getFirstName() + "%");
+            whereSQL.add("first_name LIKE ?");
+        }
+        if (filter.getLastName() != null) {
+            parameters.add("%" + filter.getLastName() + "%");
+            whereSQL.add("last_name LIKE ?");
+        }
+        if (filter.getCompanyId() != null) {
+            parameters.add(filter.getCompanyId());
+            whereSQL.add("company_id = ?");
+        }
+        parameters.add(filter.getLimit());
+        parameters.add(filter.getOffset());
+
+        String where;
+        if (filter.getFirstName() != null|| filter.getLastName() != null || filter.getCompanyId() != null) {
+            where = whereSQL.stream()
+                    .collect(joining(" AND ", " WHERE ", " LIMIT ? OFFSET ? "));
+        } else {
+            where = whereSQL.stream()
+                    .collect(joining(" AND ", "", " LIMIT ? OFFSET ? "));
+        }
+        String dynamicSql = FIND_ALL_SQL + where;
+
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(dynamicSql)) {
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setObject(i + 1, parameters.get(i));
+            }
+
+            List<Employee> employees = new ArrayList<>();
+            var resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                employees.add(buildEntity(resultSet));
+            }
+            return employees;
+        } catch (SQLException throwable) {
+            throw new DaoException(throwable);
+        }
     }
 
     @Override
@@ -111,52 +158,6 @@ public class EmployeeDao implements BaseDao<Employee, Long> {
             return employees;
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
-        }
-    }
-
-    public List<Employee> findAllByFilter(EmployeeFilterDto filter) {
-        List<Object> parameters = new ArrayList<>();
-        List<String> whereSQL = new ArrayList<>();
-
-        if (filter.getFirstName() != null) {
-            parameters.add("%" + filter.getFirstName() + "%");
-            whereSQL.add("first_name LIKE ?");
-        }
-        if (filter.getLastName() != null) {
-            parameters.add("%" + filter.getLastName() + "%");
-            whereSQL.add("last_name LIKE ?");
-        }
-        if (filter.getCompanyId() != null) {
-            parameters.add(filter.getCompanyId());
-            whereSQL.add("company_id = ?");
-        }
-        parameters.add(filter.getLimit());
-        parameters.add(filter.getOffset());
-
-        String where;
-        if (filter.getFirstName() != null|| filter.getLastName() != null || filter.getCompanyId() != null) {
-            where = whereSQL.stream()
-                    .collect(joining(" AND ", " WHERE ", " LIMIT ? OFFSET ? "));
-        } else {
-            where = whereSQL.stream()
-                    .collect(joining(" AND ", "", " LIMIT ? OFFSET ? "));
-        }
-        String dynamicSql = FIND_ALL_SQL + where;
-
-        try (var connection = ConnectionManager.get();
-             var statement = connection.prepareStatement(dynamicSql)) {
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
-            }
-
-            List<Employee> employees = new ArrayList<>();
-            var resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                employees.add(buildEntity(resultSet));
-            }
-            return employees;
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
         }
     }
 

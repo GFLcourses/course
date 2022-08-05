@@ -1,17 +1,28 @@
 package com.example.gfl_patterns.factory_task.dao;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.List;
 import java.util.Optional;
 
-public interface BaseDao<E, K> {
+public abstract class BaseDao<E, K, F> implements Dao<E, K> {
 
-    E save(E entity);                       // C
+    abstract E buildEntity(ResultSet resultSet) throws SQLException;
 
-    Optional<E> findById(K key);            // R
+    public abstract List<E> findAllByFilter(F filter);
 
-    List<E> findAll();                      // R
+    @Override
+    public abstract E save(E entity);
 
-    boolean update(E entity);               // U
+    @Override
+    public abstract Optional<E> findById(K key);
 
-    boolean delete(K key);                  // D
+    @Override
+    public abstract List<E> findAll();
+
+    @Override
+    public abstract boolean update(E entity);
+
+    @Override
+    public abstract boolean delete(K key);
 }

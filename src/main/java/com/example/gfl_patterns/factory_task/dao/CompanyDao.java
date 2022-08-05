@@ -14,7 +14,7 @@ import java.util.Optional;
 
 import static java.util.stream.Collectors.joining;
 
-public class CompanyDao implements BaseDao<Company, Long> {
+public class CompanyDao extends BaseDao<Company, Long, CompanyFilterDto> {
 
     private static final String SAVE_SQL = """
             INSERT INTO factory_task.company(title)
@@ -38,11 +38,51 @@ public class CompanyDao implements BaseDao<Company, Long> {
             WHERE id = ?
             """;
 
+    @Override
     Company buildEntity(ResultSet resultSet) throws SQLException {
         return new Company(
                 resultSet.getLong("id"),
                 resultSet.getString("title")
         );
+    }
+
+    @Override
+    public List<Company> findAllByFilter(CompanyFilterDto filter) {
+        List<Object> parameters = new ArrayList<>();
+        List<String> whereSQL = new ArrayList<>();
+
+        if (filter.getTitle() != null) {
+            parameters.add("%" + filter.getTitle() + "%");
+            whereSQL.add("title LIKE ?");
+        }
+        parameters.add(filter.getLimit());
+        parameters.add(filter.getOffset());
+
+        String where;
+        if (filter.getTitle() != null) {
+            where = whereSQL.stream()
+                    .collect(joining(" AND ", " WHERE ", " LIMIT ? OFFSET ? "));
+        } else {
+            where = whereSQL.stream()
+                    .collect(joining(" AND ", "", " LIMIT ? OFFSET ? "));
+        }
+        String dynamicSql = FIND_ALL_SQL + where;
+
+        try (var connection = ConnectionManager.get();
+             var statement = connection.prepareStatement(dynamicSql)) {
+            for (int i = 0; i < parameters.size(); i++) {
+                statement.setObject(i + 1, parameters.get(i));
+            }
+
+            List<Company> companies = new ArrayList<>();
+            var resultSet = statement.executeQuery();
+            while (resultSet.next()) {
+                companies.add(buildEntity(resultSet));
+            }
+            return companies;
+        } catch (SQLException throwable) {
+            throw new DaoException(throwable);
+        }
     }
 
     @Override
@@ -93,44 +133,6 @@ public class CompanyDao implements BaseDao<Company, Long> {
             return companies;
         } catch (SQLException throwables) {
             throw new DaoException(throwables);
-        }
-    }
-
-    public List<Company> findAllByFilter(CompanyFilterDto filter) {
-        List<Object> parameters = new ArrayList<>();
-        List<String> whereSQL = new ArrayList<>();
-
-        if (filter.getTitle() != null) {
-            parameters.add("%" + filter.getTitle() + "%");
-            whereSQL.add("title LIKE ?");
-        }
-        parameters.add(filter.getLimit());
-        parameters.add(filter.getOffset());
-
-        String where;
-        if (filter.getTitle() != null) {
-            where = whereSQL.stream()
-                    .collect(joining(" AND ", " WHERE ", " LIMIT ? OFFSET ? "));
-        } else {
-            where = whereSQL.stream()
-                    .collect(joining(" AND ", "", " LIMIT ? OFFSET ? "));
-        }
-        String dynamicSql = FIND_ALL_SQL + where;
-
-        try (var connection = ConnectionManager.get();
-             var statement = connection.prepareStatement(dynamicSql)) {
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
-            }
-
-            List<Company> companies = new ArrayList<>();
-            var resultSet = statement.executeQuery();
-            while (resultSet.next()) {
-                companies.add(buildEntity(resultSet));
-            }
-            return companies;
-        } catch (SQLException throwable) {
-            throw new DaoException(throwable);
         }
     }
 
