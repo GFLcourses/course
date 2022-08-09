@@ -14,10 +14,14 @@ public class Singleton {
         instance.secondAttribute = secondAttribute;
     }
 
-    public static synchronized Singleton getInstance() {
+    public static Singleton getInstance() {
         if (instance == null) {
-            System.out.println("init"); // for check create moment
-            new Singleton("some first value", "some second value");
+            synchronized (Singleton.class) {
+                if (instance == null) {
+                    System.out.println("singleton init..."); // for check create moment
+                    new Singleton("some first value", "some second value");
+                }
+            }
         }
         return instance;
     }
