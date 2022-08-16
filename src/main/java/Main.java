@@ -1,12 +1,36 @@
 import Builder.Pizza;
+import Proxy.Colt;
+import Proxy.Gun;
+import Proxy.MachineGun;
 import SingleTone.SingleTone;
 
 public class Main {
     public static void main(String[] args) {
-        SingleTone singleTone = SingleTone.getInstance();
-        System.out.println(singleTone.getDbConnection());
+//        singleToneCheck();
+//        builderCheck();
+        proxyCheck();
+    }
 
+    private static void builderCheck() {
         Pizza pizza = new Pizza.Builder().cheese(30).sausage(30).olives(15).build();
         System.out.println(pizza);
+    }
+
+    private static void proxyCheck() {
+        Gun gun = new Colt();
+
+        System.out.println("Shoot from colt");
+        gun.shoot();
+        System.out.println();
+
+        gun = new MachineGun(gun);
+
+        System.out.println("Shoot from machine gun");
+        gun.shoot();
+    }
+
+    private static void singleToneCheck() {
+        SingleTone singleTone = SingleTone.getInstance();
+        System.out.println(singleTone.getDbConnection());
     }
 }
