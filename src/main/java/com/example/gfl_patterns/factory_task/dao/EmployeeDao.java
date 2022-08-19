@@ -6,9 +6,7 @@ import com.example.gfl_patterns.factory_task.exception.DaoException;
 import com.example.gfl_patterns.factory_task.factory.Factory;
 import com.example.gfl_patterns.factory_task.util.ConnectionManager;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -63,7 +61,7 @@ public class EmployeeDao extends BaseDao<Employee, Long, EmployeeFilterDto> {
     }
 
     @Override
-    public List<Employee> findAllByFilter(EmployeeFilterDto filter) {
+    protected PreparedStatement buildWhereStatement(Connection connection, EmployeeFilterDto filter) throws SQLException {
         List<Object> parameters = new ArrayList<>();
         List<String> whereSQL = new ArrayList<>();
 
@@ -92,14 +90,20 @@ public class EmployeeDao extends BaseDao<Employee, Long, EmployeeFilterDto> {
         }
         String dynamicSql = FIND_ALL_SQL + where;
 
-        try (var connection = ConnectionManager.get();
-             var statement = connection.prepareStatement(dynamicSql)) {
-            for (int i = 0; i < parameters.size(); i++) {
-                statement.setObject(i + 1, parameters.get(i));
-            }
+        PreparedStatement statement = connection.prepareStatement(dynamicSql);
+        for (int i = 0; i < parameters.size(); i++) {
+            statement.setObject(i + 1, parameters.get(i));
+        }
+        return statement;
+    }
 
+    @Override
+    public List<Employee> findAllByFilter(EmployeeFilterDto filter) {
+        try (var connection = ConnectionManager.get();
+             var statement = buildWhereStatement(connection, filter)) {
             List<Employee> employees = new ArrayList<>();
-            var resultSet = statement.executeQuery();
+            ResultSet resultSet = statement.executeQuery();
+
             while (resultSet.next()) {
                 employees.add(buildEntity(resultSet));
             }
