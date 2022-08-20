@@ -16,6 +16,13 @@ import java.util.Map;
 public class BeanFactory implements Factory {
 
     private static final Map<Class, Object> context = new HashMap<>();
+    private static final BeanFactory INSTANCE = new BeanFactory();
+
+    protected BeanFactory() {  }
+
+    public static BeanFactory getInstance() {
+        return INSTANCE;
+    }
 
     @Override
     public <T> T createBean(Class<T> clazz) {

@@ -10,8 +10,7 @@ import java.util.Optional;
 import static org.junit.jupiter.api.Assertions.*;
 
 class EmployeeDaoTest {
-
-    private final EmployeeDao employeeDao = new EmployeeDao(new BeanFactory());
+    private final EmployeeDao employeeDao = new EmployeeDao(BeanFactory.getInstance());
 
     @Test
     void findById() {

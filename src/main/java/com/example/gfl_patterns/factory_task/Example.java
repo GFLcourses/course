@@ -4,7 +4,7 @@ import com.example.gfl_patterns.factory_task.controller.CompanyController;
 import com.example.gfl_patterns.factory_task.controller.EmployeeController;
 import com.example.gfl_patterns.factory_task.dto.CompanyFilterDto;
 import com.example.gfl_patterns.factory_task.dto.EmployeeFilterDto;
-import com.example.gfl_patterns.factory_task.factory.BeanFactorySingleton;
+import com.example.gfl_patterns.factory_task.factory.BeanFactory;
 import com.example.gfl_patterns.factory_task.factory.Factory;
 
 public class Example {
@@ -14,7 +14,7 @@ public class Example {
     }
 
     private void run() {
-        Factory factory = BeanFactorySingleton.getBeanFactory();
+        Factory factory = BeanFactory.getInstance();
         CompanyController companyController = new CompanyController(factory);
         EmployeeController employeeController = new EmployeeController(factory);
 
