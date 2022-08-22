@@ -9,7 +9,7 @@ public class UsingExample {
     }
 
     private void run() {
-        SomeObject someObject = SomeObjectBuilder.builder()
+        SomeObject someObject = new SomeObject.Builder()
                 .setString("string")
                 .setDouble(13.37)
                 .setBigDecimal(BigDecimal.valueOf(1.337))
