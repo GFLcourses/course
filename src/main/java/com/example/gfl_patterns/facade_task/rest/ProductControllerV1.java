@@ -2,7 +2,7 @@ package com.example.gfl_patterns.facade_task.rest;
 
 import com.example.gfl_patterns.facade_task.dto.ProductDto;
 import com.example.gfl_patterns.facade_task.entity.Product;
-import com.example.gfl_patterns.facade_task.facade.ProductStoreFacade;
+import com.example.gfl_patterns.facade_task.service.ProductStoreFacade;
 import com.example.gfl_patterns.facade_task.mapper.ProductMapper;
 import com.example.gfl_patterns.facade_task.service.ProductService;
 import org.springframework.beans.factory.annotation.Autowired;

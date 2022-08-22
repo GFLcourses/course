@@ -1,11 +1,9 @@
-package com.example.gfl_patterns.facade_task.facade;
+package com.example.gfl_patterns.facade_task.service;
 
 import com.example.gfl_patterns.facade_task.entity.Product;
 import com.example.gfl_patterns.facade_task.entity.Store;
 import com.example.gfl_patterns.facade_task.exception.EntityNoSuchException;
 import com.example.gfl_patterns.facade_task.exception.StoreIsFullException;
-import com.example.gfl_patterns.facade_task.service.ProductService;
-import com.example.gfl_patterns.facade_task.service.StoreService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
