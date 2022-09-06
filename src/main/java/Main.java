@@ -1,4 +1,7 @@
 import Builder.Pizza;
+import Facade.Facade;
+import Facade.service.impl.DataAnalyzerGeneric;
+import Facade.service.impl.WebPageParser;
 import Proxy.Colt;
 import Proxy.Gun;
 import Proxy.MachineGun;
@@ -8,12 +11,12 @@ public class Main {
     public static void main(String[] args) {
 //        singleToneCheck();
 //        builderCheck();
-        proxyCheck();
+//        proxyCheck();
+        facadeCheck();
     }
 
-    private static void builderCheck() {
-        Pizza pizza = new Pizza.Builder().cheese(30).sausage(30).olives(15).build();
-        System.out.println(pizza);
+    private static void facadeCheck() {
+        System.out.println(new Facade(new WebPageParser(), new DataAnalyzerGeneric()).getAnalyzedData("https://google.com/"));
     }
 
     private static void proxyCheck() {
@@ -32,5 +35,10 @@ public class Main {
     private static void singleToneCheck() {
         SingleTone singleTone = SingleTone.getInstance();
         System.out.println(singleTone.getDbConnection());
+    }
+
+    private static void builderCheck() {
+        Pizza pizza = new Pizza.Builder().cheese(30).sausage(30).olives(15).build();
+        System.out.println(pizza);
     }
 }
