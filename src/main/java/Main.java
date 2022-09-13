@@ -6,6 +6,10 @@ import Facade.FrameFactory;
 import Facade.WheelFactory;
 import Proxy.TelegramLogin;
 import Singleton.Singleton;
+import sub_pub.CategoriesOfPosts;
+import sub_pub.pub.ChanelPublisher;
+import sub_pub.pub.Publisher;
+import sub_pub.sub.*;
 
 import java.sql.SQLException;
 import java.util.Scanner;
@@ -57,5 +61,23 @@ public class Main {
         int choice = scanner.nextInt();
         TelegramLogin login = new TelegramLogin(choice);
         System.out.println(login.Login());
+
+        //Publisher/Subscriber
+
+
+
+
+        publisher.subscribe(CategoriesOfPosts.POSTS.value,subscriber1);
+        publisher.subscribe(CategoriesOfPosts.VIDEO.value,subscriber1,subscriber2);
+        publisher.subscribe(CategoriesOfPosts.STREAM.value,subscriber1,subscriber2,subscriber3);
+        publisher.subscribe(CategoriesOfPosts.SPONSORS.value,subscriber4);
+        publisher.unsubscribe(CategoriesOfPosts.STREAM.value, subscriber3);
+        publisher.publish();
+
     }
+    private final static Subscriber subscriber1 = new Subscriber1();
+    private final static Subscriber subscriber2 = new Subscriber2();
+    private final static Subscriber subscriber3 = new Subscriber3();
+    private final static Subscriber subscriber4 = new Subscriber4();
+    private final static Publisher publisher = new ChanelPublisher();
 }
