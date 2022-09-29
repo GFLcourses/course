@@ -7,7 +7,7 @@ public class People {
 
     public People(String name, int age, boolean isMarried) {
         this.name = name;
-        age = age;
+        this.age = age;
         this.isMarried = isMarried;
     }
 

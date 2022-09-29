@@ -1,4 +1,4 @@
-package sub_pub;
+package Publisher_Subscriber;
 
 public enum CategoriesOfPosts {
     POSTS   ("post"),

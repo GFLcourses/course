@@ -1,6 +1,6 @@
-package sub_pub.pub;
+package Publisher_Subscriber.Publisher;
 
-import sub_pub.sub.Subscriber;
+import Publisher_Subscriber.Subscriber.Subscriber;
 
 public interface Publisher {
     void subscribe(String chanel, Subscriber... subscribers);

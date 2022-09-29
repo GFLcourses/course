@@ -1,6 +1,6 @@
-package sub_pub.sub;
+package Publisher_Subscriber.Subscriber;
 
-public class Subscriber2 implements Subscriber {
+public class Subscriber1 implements Subscriber {
 
     @Override
     public void message(String message) {
@@ -9,6 +9,6 @@ public class Subscriber2 implements Subscriber {
 
     @Override
     public String getId() {
-        return "subscriber-2";
+        return "subscriber-1";
     }
 }

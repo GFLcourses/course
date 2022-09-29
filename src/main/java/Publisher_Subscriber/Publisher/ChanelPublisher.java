@@ -1,7 +1,7 @@
-package sub_pub.pub;
+package Publisher_Subscriber.Publisher;
 
-import sub_pub.CategoriesOfPosts;
-import sub_pub.sub.Subscriber;
+import Publisher_Subscriber.CategoriesOfPosts;
+import Publisher_Subscriber.Subscriber.Subscriber;
 
 import java.util.*;
 
